@@ -30,9 +30,25 @@ module.exports = {
       )
     ),
 
-    extraNodeModules: modules.reduce((acc, name) => {
+    extraNodeModules: 
+    modules.reduce((acc, name) => {
       acc[name] = path.join(__dirname, 'node_modules', name);
       return acc;
     }, {}),
   },
 };
+
+
+
+function mergeExtraNodeModules(...configs) {
+  return configs.reduce((acc, config) => {
+    for (const moduleName in config.resolver.extraNodeModules) {
+      if (acc.resolver.extraNodeModules[moduleName]) {
+        // If the module already exists in acc, do not overwrite it.
+        continue;
+      }
+      acc.resolver.extraNodeModules[moduleName] = config.resolver.extraNodeModules[moduleName];
+    }
+    return acc;
+  }, { resolver: { extraNodeModules: {} } });
+}
