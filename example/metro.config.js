@@ -12,43 +12,54 @@ const modules = Object.keys({
 
 const defaultConfig = getDefaultConfig(__dirname);
 
-module.exports = {
-  ...defaultConfig,
+// Merge function to combine extraNodeModules
+function mergeExtraNodeModules(config1, config2) {
+  return {
+    ...config1,
+    resolver: {
+      ...config1.resolver,
+      extraNodeModules: {
+        ...config1.resolver.extraNodeModules,
+        ...config2.resolver.extraNodeModules,
+      },
+    },
+  };
+}
 
+const config1 = {
+  ...defaultConfig,
   projectRoot: __dirname,
   watchFolders: [root],
-
-  // We need to make sure that only one version is loaded for peerDependencies
-  // So we block them at the root, and alias them to the versions in example's node_modules
   resolver: {
     ...defaultConfig.resolver,
-
     blacklistRE: exclusionList(
       modules.map(
         (m) =>
           new RegExp(`^${escape(path.join(root, 'node_modules', m))}\\/.*$`)
       )
     ),
-
     extraNodeModules: 
-    modules.reduce((acc, name) => {
-      acc[name] = path.join(__dirname, 'node_modules', name);
-      return acc;
-    }, {}),
+      modules.reduce((acc, name) => {
+        acc[name] = path.join(__dirname, 'node_modules', name);
+        return acc;
+      }, {}),
   },
 };
 
+const config2 = {
+  resolver: {
+    extraNodeModules: {
+      url: require.resolve('url/'),
+      fs: require.resolve('expo-file-system'),
+      http: require.resolve('stream-http'),
+      https: require.resolve('https-browserify'),
+      net: require.resolve('react-native-tcp'),
+      os: require.resolve('os-browserify/browser.js'),
+      path: require.resolve('path-browserify'),
+      stream: require.resolve('readable-stream'),
+      vm: require.resolve('vm-browserify'),
+    },
+  },
+};
 
-
-function mergeExtraNodeModules(...configs) {
-  return configs.reduce((acc, config) => {
-    for (const moduleName in config.resolver.extraNodeModules) {
-      if (acc.resolver.extraNodeModules[moduleName]) {
-        // If the module already exists in acc, do not overwrite it.
-        continue;
-      }
-      acc.resolver.extraNodeModules[moduleName] = config.resolver.extraNodeModules[moduleName];
-    }
-    return acc;
-  }, { resolver: { extraNodeModules: {} } });
-}
+module.exports = mergeExtraNodeModules(config1, config2);

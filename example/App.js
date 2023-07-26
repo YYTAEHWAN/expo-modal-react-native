@@ -5,10 +5,10 @@
 import React,{useEffect} from 'react';
 import { SafeAreaView, StyleSheet, BackHandler, Alert} from 'react-native';
 
-import Colors from './constants/colors';
-import Navigator from './navigator/Navigator';
-import AuthProvider from './context/AuthContext';
-import PayinfoProvider from './context/PayinfoContext';
+import Colors from './src/constants/colors';
+import Navigator from './src/navigator/Navigator';
+import AuthProvider from './src/context/AuthContext';
+import PayinfoProvider from './src/context/PayinfoContext';
 
 
 export default function App() {
