@@ -26,6 +26,9 @@ const Main = ({ navigation }) => {
         <View style={styles.MainView}>
             <Logo/>
             <View style={styles.ButtonView}>
+            <SubmitButton
+                    onPress={()=>navigation.navigate('App')}
+                    >WC2 테스트 </SubmitButton>
                 <SubmitButton
                     onPress={()=>navigation.navigate('MyWallets')}
                     >지갑 등록 / 내 정보</SubmitButton>
@@ -45,7 +48,7 @@ const Main = ({ navigation }) => {
                 </Pressable> */}
                 <TouchableOpacity onPress={()=>navigation.navigate('QRCodeScanner')}>
                     <Image
-                        style={styles.QRcode} 
+                        style={styles.QRcode}
                         source={require('../assets/qrcode.png')}/>
                 </TouchableOpacity>
             </View>
